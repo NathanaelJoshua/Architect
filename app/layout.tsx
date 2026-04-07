@@ -1,23 +1,21 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Geist } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
 });
 
-const playfair = Playfair_Display({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
   title: "Residencia Jurská",
-  description: "Premium apartments in Bratislava",
+  description: "Exceptional living for those who build with vision",
 };
 
 export default function RootLayout({
@@ -28,9 +26,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", inter.variable, playfair.variable, "font-sans", geist.variable)}
+      className={cn("h-full antialiased", inter.variable, geistMono.variable)}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-cream text-ink">
+        {children}
+      </body>
     </html>
   );
 }

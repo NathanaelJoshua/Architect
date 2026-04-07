@@ -2,700 +2,323 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
+import { Footer7 } from "@/components/ui/footer-7";
+import { FluidNavbar } from "@/components/ui/fluid-navbar";
+import { CollectionScroll } from "@/components/ui/collection-scroll";
+
+/* ─────────────────────────────────────────────────────────────
+   Residencia Jurská — restyled in the fluid.glass design system
+   Sections (mirrors fluid.glass homepage order):
+     1. Intro loader
+     2. Header (glass)
+     3. Hero (dark)
+     4. Philosophy text block
+     5. About callout card
+     6. 4-col category grid (hover-reveal images)
+     7. Sales gallery banner (full-width dark)
+     8. Featured residences grid
+     9. Mood image blocks
+    10. Resident stories carousel
+    11. CTA banner
+    12. Footer
+   ───────────────────────────────────────────────────────────── */
+
+const testimonials = [
+  {
+    text: "Living at Residencia Jurská has exceeded all my expectations. The luxury finishes and smart home technology make every day feel special.",
+    image: "https://randomuser.me/api/portraits/women/1.jpg",
+    name: "Briana Patton",
+    role: "Resident",
+  },
+  {
+    text: "The location is perfect — close to everything, yet peaceful and private. The building's design is stunning.",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
+    name: "Bilal Ahmed",
+    role: "Resident",
+  },
+  {
+    text: "Exceptional service from the management team. Any issues are resolved quickly and professionally.",
+    image: "https://randomuser.me/api/portraits/women/3.jpg",
+    name: "Saman Malik",
+    role: "Resident",
+  },
+  {
+    text: "The investment has been outstanding. Property values continue to rise, and the quality is unmatched.",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    name: "Omar Raza",
+    role: "Owner",
+  },
+  {
+    text: "The amenities and common areas are beautifully maintained. A true community of like-minded people.",
+    image: "https://randomuser.me/api/portraits/women/5.jpg",
+    name: "Zainab Hussain",
+    role: "Resident",
+  },
+  {
+    text: "Energy efficiency and modern systems save on utilities while providing comfort. Best decision I made.",
+    image: "https://randomuser.me/api/portraits/women/6.jpg",
+    name: "Aliza Khan",
+    role: "Resident",
+  },
+  {
+    text: "The architecture blends traditional elegance with modern functionality. It's a masterpiece.",
+    image: "https://randomuser.me/api/portraits/men/7.jpg",
+    name: "Farhan Siddiqui",
+    role: "Architect",
+  },
+  {
+    text: "Safe, spacious, with excellent facilities for children and adults alike.",
+    image: "https://randomuser.me/api/portraits/women/8.jpg",
+    name: "Sana Sheikh",
+    role: "Resident",
+  },
+  {
+    text: "The views are breathtaking. Waking up to this scenery every morning is priceless.",
+    image: "https://randomuser.me/api/portraits/men/9.jpg",
+    name: "Hassan Ali",
+    role: "Resident",
+  },
+];
+
+const projects = [
+  {
+    name: "The Garden Residence",
+    tag: "Penthouse · 240 m²",
+    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    name: "Atelier Loft 04",
+    tag: "Apartment · 96 m²",
+    img: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    name: "Skyline Suite",
+    tag: "Penthouse · 310 m²",
+    img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    name: "Courtyard House",
+    tag: "Apartment · 142 m²",
+    img: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1400&auto=format&fit=crop",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="relative">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="text-xl font-serif font-bold">
-              Residencia Jurská
-            </div>
-            <div className="hidden md:flex space-x-8">
-              <a
-                href="#apartments"
-                className="text-foreground hover:text-gold transition-colors"
-              >
-                Apartments
-              </a>
-              <a
-                href="#contact"
-                className="text-foreground hover:text-gold transition-colors"
-              >
-                Contact
-              </a>
-            </div>
-            <button className="md:hidden">Menu</button>
+    <div className="relative bg-cream text-ink">
+      {/* 1. INTRO LOADER ─────────────────────────────────────── */}
+      <div className="intro-fade fixed inset-0 z-[100] flex flex-col items-center justify-center bg-cream">
+        <div className="cube-spin w-12 h-12 border border-ink/30 rotate-45 mb-6" />
+        <span className="label-mono text-ink/70">Residencia Jurská</span>
+      </div>
+      {/* 2. HEADER (fluid.glass-style fixed bottom-center bar) */}
+      <FluidNavbar />
+      {/* 3. HERO ──────────────────────────────────────────────── */}
+      <section
+        id="top"
+        className="relative h-screen w-full overflow-hidden bg-ink text-cream"
+      >
+        <Image
+          src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2000&auto=format&fit=crop"
+          alt="Residencia Jurská"
+          fill
+          priority
+          className="object-cover opacity-60"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70" />
+        <div className="relative z-10 h-full flex flex-col justify-end px-6 md:px-16 pb-24">
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1], delay: 2 }}
+            className="text-[clamp(2.5rem,7vw,7rem)] leading-[0.95] tracking-tight max-w-5xl font-light"
+          >
+            Exceptional living for those who build with vision.
+          </motion.h1>
+          <div className="mt-10 flex items-center justify-between label-mono">
+            <span>Bratislava — Est. 2025</span>
+            <span className="flex items-center gap-2">
+              Scroll <ArrowRight className="w-3 h-3" />
+            </span>
           </div>
         </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
+      </section>
+      {/* 4. PHILOSOPHY ────────────────────────────────────────── */}
+      <section className="px-6 md:px-16 py-32 max-w-6xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.33, 1, 0.68, 1] }}
+          viewport={{ once: true }}
+          className="text-[clamp(1.5rem,3vw,3rem)] leading-[1.2] font-light tracking-tight"
+        >
+          We craft homes for those who refuse compromise. Every surface, joint
+          and sightline is considered — designed by architects, finished by
+          artisans, and built to outlast a generation.
+        </motion.p>
+      </section>
+      {/* 5. ABOUT CALLOUT ─────────────────────────────────────── */}
+      <section id="about" className="px-6 md:px-16 pb-32">
+        <div className="max-w-6xl mx-auto glass rounded-2xl p-10 md:p-16 flex flex-col md:flex-row gap-10 md:items-end justify-between">
+          <div>
+            <span className="label-mono text-ink/60">About — 01</span>
+            <h2 className="text-3xl md:text-5xl font-light mt-4 max-w-xl tracking-tight">
+              A practice rooted in material honesty and quiet luxury.
+            </h2>
+          </div>
+          <a
+            href="#"
+            className="group inline-flex items-center gap-3 label-mono whitespace-nowrap"
+          >
+            Read our story
+            <span className="w-10 h-10 rounded-full glass-dark text-white flex items-center justify-center group-hover:rotate-45 fluid-transition">
+              <ArrowUpRight className="w-4 h-4" />
+            </span>
+          </a>
+        </div>
+      </section>
+      {/* 6. COLLECTION (jurska.sk-style sticky scroll) ───────── */}
+      <CollectionScroll />
+      {/* 7. SALES GALLERY BANNER ────────────────────────────────
+      <section
+        id="gallery"
+        className="relative h-[70vh] w-full overflow-hidden bg-ink text-cream"
+      >
+        <Image
+          src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=2000&auto=format&fit=crop"
+          alt="Sales gallery"
+          fill
+          className="object-cover opacity-50"
+        />
+        <div className="relative z-10 h-full flex flex-col justify-between p-6 md:p-16">
+          <span className="label-mono">Visit — 03</span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+              <h2 className="text-4xl md:text-6xl font-light tracking-tight max-w-2xl">
+                The sales gallery,
+                <br />
+                Jurská 123, Bratislava.
+              </h2>
+              <p className="label-mono mt-4 opacity-70">
+                By appointment — Mon to Sat
+              </p>
+            </div>
+            <button className="glass text-white rounded-full px-6 py-3 label-mono inline-flex items-center gap-3 self-start md:self-auto">
+              Book a viewing <ArrowUpRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </section> */}
+      {/* 8. FEATURED RESIDENCES ───────────────────────────────── */}
+      {/* <section id="projects" className="px-6 md:px-16 py-32">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-10 divider-hair pt-6">
+            <span className="label-mono">Featured — 04</span>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight max-w-md text-right">
+              Selected residences
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {projects.map((p) => (
+              <div key={p.name} className="group">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+                  <Image
+                    src={p.img}
+                    alt={p.name}
+                    fill
+                    className="object-cover group-hover:scale-105 fluid-transition"
+                  />
+                </div>
+                <div className="flex justify-between items-baseline mt-4">
+                  <h3 className="text-xl md:text-2xl font-light tracking-tight">
+                    {p.name}
+                  </h3>
+                  <span className="label-mono text-ink/60">{p.tag}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section> */}
+      {/* 9. MOOD IMAGES ───────────────────────────────────────── */}
+      {/* <section className="space-y-1">
+        <div className="relative h-[70vh] w-full overflow-hidden">
           <Image
-            src="https://picsum.photos/1920/1080?random=1"
-            alt="Hero background"
+            src="https://images.unsplash.com/photo-1600210492493-0946911123ea?q=80&w=2000&auto=format&fit=crop"
+            alt="Mood"
             fill
             className="object-cover"
-            priority
           />
-          <div className="absolute inset-0 bg-black/40"></div>
         </div>
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <p className="text-sm uppercase tracking-widest mb-4 font-medium">
-              Residencia Jurská
-            </p>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-8 leading-tight">
-              Experience the Future
-              <br />
-              of Living Today
-            </h1>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gold text-foreground px-8 py-3 rounded-full font-semibold hover:bg-opacity-80 transition-all duration-300 hover:scale-105">
-                Contact Us
-              </button>
-              <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-foreground transition-all duration-300 hover:scale-105">
-                View Apartments
-              </button>
-            </div>
-          </motion.div>
+        <div className="relative h-[70vh] w-full overflow-hidden">
+          <Image
+            src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=2000&auto=format&fit=crop"
+            alt="Mood"
+            fill
+            className="object-cover"
+          />
         </div>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white text-xs font-semibold uppercase tracking-wider">
-          <div className="w-4 h-6 border-2 border-white rounded-full mx-auto mb-4 relative">
-            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-1 h-2 bg-white rounded-full animate-bounce"></div>
-          </div>
-          Scroll down
-        </div>
-      </section>
-
-      {/* Feature Intro Section */}
-      <section className="py-24 px-4 bg-background">
+      </section> */}
+      {/* 10. RESIDENT STORIES ─────────────────────────────────── */}
+      <section id="stories" className="px-6 md:px-16 py-32 bg-cream">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-4xl md:text-6xl font-serif font-bold mb-6">
-                A New Home That Will Change Your World
-              </h2>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <p className="text-lg text-text-secondary mb-8 leading-relaxed">
-                Discover unparalleled luxury and innovation in the heart of
-                Bratislava. Our premium residences combine cutting-edge
-                technology with timeless elegance.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <span className="bg-white px-4 py-2 rounded-full text-sm font-medium">
-                  Smart Living
-                </span>
-                <span className="bg-white px-4 py-2 rounded-full text-sm font-medium">
-                  Premium Materials
-                </span>
-                <span className="bg-white px-4 py-2 rounded-full text-sm font-medium">
-                  Quiet Location
-                </span>
-                <span className="bg-white px-4 py-2 rounded-full text-sm font-medium">
-                  No Compromises
-                </span>
-              </div>
-            </motion.div>
-          </div>
-          <motion.div
-            className="mt-16 overflow-hidden"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-          >
-            <div className="flex space-x-4 overflow-x-auto pb-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="flex-shrink-0 w-80 h-60 relative overflow-hidden rounded-lg"
-                >
-                  <Image
-                    src={`https://picsum.photos/320/240?random=${i + 10}`}
-                    alt={`Interior ${i}`}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* USP Cards Section */}
-      <section className="py-24 px-4 bg-background">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: "⚡",
-                title: "Technology",
-                description:
-                  "State-of-the-art smart home systems and cutting-edge automation for modern living.",
-              },
-              {
-                icon: "🌱",
-                title: "Ecology",
-                description:
-                  "Sustainable design with green roofs, energy-efficient systems, and eco-friendly materials.",
-              },
-              {
-                icon: "📍",
-                title: "Location",
-                description:
-                  "Prime location in Bratislava with excellent transport links and urban amenities.",
-              },
-            ].map((card, index) => (
-              <motion.div
-                key={card.title}
-                className="bg-white p-8 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-4xl mb-4">{card.icon}</div>
-                <h3 className="text-2xl font-serif font-bold mb-4">
-                  {card.title}
-                </h3>
-                <p className="text-text-secondary leading-relaxed">
-                  {card.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Investment Value Section */}
-      <section className="py-24 px-4 bg-background">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-16">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-3xl font-serif font-bold mb-6">
-                Investment in Excellence
-              </h3>
-              <p className="text-lg text-text-secondary mb-6 leading-relaxed">
-                Our residences offer timeless value through exceptional
-                location, superior craftsmanship, and future-proof design that
-                appreciates over time.
-              </p>
-              <a
-                href="#contact"
-                className="text-gold hover:underline font-medium"
-              >
-                Learn more about our investment potential
-              </a>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="relative h-96 overflow-hidden rounded-lg"
-            >
-              <Image
-                src="https://picsum.photos/600/400?random=20"
-                alt="Investment value"
-                fill
-                className="object-cover"
-              />
-            </motion.div>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="relative h-96 overflow-hidden rounded-lg order-2 lg:order-1"
-            >
-              <Image
-                src="https://picsum.photos/600/400?random=21"
-                alt="Premium materials"
-                fill
-                className="object-cover"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="order-1 lg:order-2"
-            >
-              <h3 className="text-3xl font-serif font-bold mb-6">
-                Premium Materials & Craftsmanship
-              </h3>
-              <p className="text-lg text-text-secondary mb-6 leading-relaxed">
-                Every detail is crafted with the finest materials and attention
-                to quality. From imported stone finishes to custom cabinetry,
-                excellence is in every element.
-              </p>
-              <a
-                href="#apartments"
-                className="text-gold hover:underline font-medium"
-              >
-                Explore our material selections
-              </a>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Smart Technology Section */}
-      <section className="py-24 px-4 bg-foreground text-white">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
-              Smart & Strong Technologies
+          <div className="flex justify-between items-end mb-10 divider-hair pt-6">
+            <span className="label-mono">Stories — 05</span>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight max-w-md text-right">
+              What our residents say
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Technology serves functionality, savings, and comfort. Our
-              high-tech standard integrates seamlessly with the TapHome smart
-              home system.
-            </p>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                title: "TapHome App",
-                description:
-                  "Control your entire home from your smartphone with intuitive touch controls and automation.",
-                image: "https://picsum.photos/300/200?random=30",
-              },
-              {
-                title: "Smart Security",
-                description:
-                  "Advanced security systems with biometric access and 24/7 monitoring for peace of mind.",
-                image: "https://picsum.photos/300/200?random=31",
-              },
-              {
-                title: "Ceiling Cooling",
-                description:
-                  "Efficient climate control with radiant cooling systems for optimal comfort year-round.",
-                image: "https://picsum.photos/300/200?random=32",
-              },
-              {
-                title: "Floor Heating",
-                description:
-                  "Underfloor heating systems provide even warmth and eliminate cold spots in your home.",
-                image: "https://picsum.photos/300/200?random=33",
-              },
-            ].map((tech, index) => (
-              <motion.div
-                key={tech.title}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="relative h-32 mb-4 overflow-hidden rounded">
-                  <Image
-                    src={tech.image}
-                    alt={tech.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <h4 className="text-xl font-serif font-bold mb-3">
-                  {tech.title}
-                </h4>
-                <p className="text-gray-300 leading-relaxed">
-                  {tech.description}
-                </p>
-              </motion.div>
-            ))}
+          </div>
+          <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[640px] overflow-hidden">
+            <TestimonialsColumn
+              testimonials={testimonials.slice(0, 3)}
+              duration={15}
+            />
+            <TestimonialsColumn
+              testimonials={testimonials.slice(3, 6)}
+              className="hidden md:block"
+              duration={19}
+            />
+            <TestimonialsColumn
+              testimonials={testimonials.slice(6, 9)}
+              className="hidden lg:block"
+              duration={17}
+            />
           </div>
         </div>
       </section>
-
-      {/* CTA Banner */}
-      <section className="py-24 px-4 bg-gold">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-8">
-              Interested in our project?
-            </h2>
-            <button className="bg-foreground text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-80 transition-all duration-300 hover:scale-105">
-              Contact Us
-            </button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Project Philosophy / Testimonials */}
-      <section className="py-24 px-4 bg-background">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-serif font-bold mb-6">
-              Project Philosophy
-            </h2>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                quote:
-                  "This project represents the perfect blend of luxury and functionality. Every decision was made with the resident's lifestyle in mind.",
-                name: "Architect Name",
-                title: "Lead Architect",
-                avatar: "https://picsum.photos/100/100?random=40",
-              },
-              {
-                quote:
-                  "The attention to detail and commitment to quality is unparalleled. This is more than just a building—it's a legacy.",
-                name: "Developer Name",
-                title: "Project Developer",
-                avatar: "https://picsum.photos/100/100?random=41",
-              },
-              {
-                quote:
-                  "Living here feels like the future has arrived. The technology and design work seamlessly together.",
-                name: "Resident Name",
-                title: "Early Resident",
-                avatar: "https://picsum.photos/100/100?random=42",
-              },
-            ].map((testimonial, index) => (
-              <motion.div
-                key={testimonial.name}
-                className="bg-white p-8 rounded-lg shadow-sm"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-              >
-                <blockquote className="text-lg italic text-text-secondary mb-6 leading-relaxed">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div className="flex items-center">
-                  <Image
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    width={50}
-                    height={50}
-                    className="rounded-full mr-4"
-                  />
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-text-secondary">
-                      {testimonial.title}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Location / Distance Map Section */}
-      <section className="py-24 px-4 bg-background">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="relative h-96 bg-gray-200 rounded-lg flex items-center justify-center"
+      {/* 11. CTA BANNER ───────────────────────────────────────── */}
+      <section
+        id="contact"
+        className="relative px-6 md:px-16 py-40 bg-ink text-cream overflow-hidden"
+      >
+        <div className="max-w-6xl mx-auto text-center">
+          <span className="label-mono opacity-70">
+            Where vision meets execution
+          </span>
+          <h2 className="text-[clamp(2.5rem,6vw,6rem)] font-light tracking-tight leading-[1] mt-6">
+            Become a<br />
+            <em className="font-serif italic">resident</em>.
+          </h2>
+          <div className="mt-12 flex flex-wrap gap-4 justify-center">
+            <a
+              href="mailto:hello@residencia.sk"
+              className="glass text-white rounded-full px-8 py-4 label-mono inline-flex items-center gap-3"
             >
-              <div className="text-center">
-                <div className="text-6xl mb-4">📍</div>
-                <p className="text-text-secondary">Interactive Map</p>
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
+              Get in touch <ArrowUpRight className="w-4 h-4" />
+            </a>
+            <a
+              href="#categories"
+              className="rounded-full px-8 py-4 label-mono inline-flex items-center gap-3 border border-white/30 hover:bg-white/10 fluid-transition"
             >
-              <h3 className="text-3xl font-serif font-bold mb-8">
-                Prime Location in Bratislava
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { place: "Train Station Vinohrady", time: "5 min" },
-                  { place: "Shopping Center", time: "8 min" },
-                  { place: "City Center", time: "12 min" },
-                  { place: "Airport", time: "25 min" },
-                  { place: "International School", time: "10 min" },
-                  { place: "Medical Center", time: "6 min" },
-                ].map((location) => (
-                  <div
-                    key={location.place}
-                    className="flex items-center justify-between py-2 border-b border-gray-200"
-                  >
-                    <span className="flex items-center">
-                      <span className="mr-3">📍</span>
-                      {location.place}
-                    </span>
-                    <span className="font-semibold text-gold">
-                      {location.time}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+              Browse residences
+            </a>
           </div>
         </div>
       </section>
-
-      {/* Contact Form Section */}
-      <section id="contact" className="py-24 px-4 bg-background">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-4xl font-serif font-bold mb-8">
-                Get in Touch
-              </h2>
-              <div className="bg-white p-8 rounded-lg shadow-sm">
-                <div className="flex items-center mb-6">
-                  <Image
-                    src="https://picsum.photos/80/80?random=50"
-                    alt="Agent"
-                    width={80}
-                    height={80}
-                    className="rounded-full mr-6"
-                  />
-                  <div>
-                    <h3 className="text-xl font-semibold">John Smith</h3>
-                    <p className="text-text-secondary">Sales Representative</p>
-                  </div>
-                </div>
-                <div className="space-y-4 text-sm">
-                  <div className="flex items-center">
-                    <span className="mr-3">📞</span>
-                    <span>+421 123 456 789</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-3">✉️</span>
-                    <span>john.smith@residencia.sk</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-3">📍</span>
-                    <span>Jurská 123, Bratislava</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <form className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Interest
-                  </label>
-                  <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent">
-                    <option>1-Bedroom Apartment</option>
-                    <option>2-Bedroom Apartment</option>
-                    <option>3-Bedroom Apartment</option>
-                    <option>Penthouse</option>
-                    <option>Investment Opportunity</option>
-                  </select>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    rows={4}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
-                  ></textarea>
-                </div>
-                <div className="flex items-center">
-                  <input type="checkbox" id="privacy" className="mr-3" />
-                  <label
-                    htmlFor="privacy"
-                    className="text-sm text-text-secondary"
-                  >
-                    I agree to the processing of personal data according to the
-                    privacy policy.
-                  </label>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-gold text-foreground py-3 rounded-full font-semibold hover:bg-opacity-80 transition-all duration-300 hover:scale-105"
-                >
-                  Send Message
-                </button>
-              </form>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-foreground text-white py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-xl font-serif font-bold mb-4">
-                Residencia Jurská
-              </div>
-              <p className="text-gray-300 mb-4">
-                Premium apartments in the heart of Bratislava.
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-gold transition-colors">
-                  Instagram
-                </a>
-                <a href="#" className="hover:text-gold transition-colors">
-                  LinkedIn
-                </a>
-                <a href="#" className="hover:text-gold transition-colors">
-                  Facebook
-                </a>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
-              <div className="space-y-2 text-gray-300">
-                <p>+421 123 456 789</p>
-                <p>info@residencia.sk</p>
-                <p>Jurská 123, Bratislava</p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <div className="space-y-2">
-                <a
-                  href="#apartments"
-                  className="text-gray-300 hover:text-gold transition-colors"
-                >
-                  Apartments
-                </a>
-                <a
-                  href="#contact"
-                  className="text-gray-300 hover:text-gold transition-colors"
-                >
-                  Contact
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-gold transition-colors"
-                >
-                  About
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-gold transition-colors"
-                >
-                  Gallery
-                </a>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <div className="space-y-2">
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-gold transition-colors"
-                >
-                  Privacy Policy
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-gold transition-colors"
-                >
-                  Terms of Service
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-gold transition-colors"
-                >
-                  Cookie Policy
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Residencia Jurská. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* 12. FOOTER ───────────────────────────────────────────── */}
+      <Footer7 />
     </div>
   );
 }
