@@ -1,15 +1,15 @@
 "use client";
 
 /**
- * Fluid.glass-style navbar — morphs from a small bottom bar into a
+ * Fluid.glass-style navbar — morphs from a small top bar into a
  * centered dark panel on click.
  *
- * Closed : 22rem × 4rem, fixed bottom-center
- * Open   : 22rem × ~38rem, centered in viewport
- * Layout inside open panel:
+ * Closed : 22rem × 4rem, fixed top-center, shows current page title
+ * Open   : 22rem × 38rem, vertically centered in viewport
+ * Inside open panel:
  *   - "MENU" eyebrow
- *   - Vertical nav links (large, light)
- *   - Two-column contact block (News/Showroom · phone/email)
+ *   - Vertical nav links (route-based, Next Link)
+ *   - Two-column contact block
  *   - "Get a quote" button
  *   - X close at bottom
  */
@@ -22,18 +22,7 @@ import { ArrowRight } from "lucide-react";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
 
-type Section = { id: string; label: string };
 type MenuLink = { href: string; label: string };
-
-const SECTIONS: Section[] = [
-  { id: "top", label: "Residencia Jurská" },
-  { id: "about", label: "About — 01" },
-  { id: "categories", label: "Collection — 02" },
-  { id: "gallery", label: "Visit — 03" },
-  { id: "projects", label: "Featured — 04" },
-  { id: "stories", label: "Stories — 05" },
-  { id: "contact", label: "Contact — 06" },
-];
 
 /* Page-level routes shown in the open menu */
 const MENU_LINKS: MenuLink[] = [
@@ -44,39 +33,20 @@ const MENU_LINKS: MenuLink[] = [
   { href: "/contact",    label: "Contact" },
 ];
 
-/* Title shown in the closed bar — one entry per route */
+/* Title shown in the closed bar — home gets the company name */
+const COMPANY = "Residencia Jurská";
 const PAGE_TITLES: Record<string, string> = {
-  "/":          "Residencia Jurská",
-  "/about":     "About — Studio",
-  "/collection":"Collection",
-  "/approach":  "Approach",
-  "/contact":   "Contact",
+  "/":           COMPANY,
+  "/about":      "About — Studio",
+  "/collection": "Collection",
+  "/approach":   "Approach",
+  "/contact":    "Contact",
 };
 
 export function FluidNavbar() {
   const pathname = usePathname() ?? "/";
-  const isHome = pathname === "/";
-  const pageTitle = PAGE_TITLES[pathname] ?? "Residencia Jurská";
-  const [activeIdx, setActiveIdx] = useState(0);
+  const pageTitle = PAGE_TITLES[pathname] ?? COMPANY;
   const [open, setOpen] = useState(false);
-
-  // Track which section is in view → drives the title reel.
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    SECTIONS.forEach((s, i) => {
-      const el = document.getElementById(s.id);
-      if (!el) return;
-      const io = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveIdx(i);
-        },
-        { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
-      );
-      io.observe(el);
-      observers.push(io);
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
 
   // Lock scroll while menu is open
   useEffect(() => {
@@ -103,7 +73,7 @@ export function FluidNavbar() {
       </AnimatePresence>
 
       {/* ── MORPHING PANEL ──────────────────────────────────── */}
-      {/* Anchored by `top` always — only `height` and `y` tween, both
+      {/* Anchored by `top` always — only `height`/`y`/`width` tween, all
           numeric/rem so framer can interpolate smoothly. The panel grows
           downward, then a translateY recenters it visually. */}
       <motion.header
@@ -138,8 +108,8 @@ export function FluidNavbar() {
               className="flex items-center h-16 w-full"
             >
               {/* Logo */}
-              <a
-                href="#top"
+              <Link
+                href="/"
                 className="w-16 h-16 flex items-center justify-center"
                 aria-label="Home"
               >
@@ -154,39 +124,20 @@ export function FluidNavbar() {
                     transform="rotate(45 12 12)"
                   />
                 </svg>
-              </a>
+              </Link>
 
-              {/* Title — section reel on home, static page name elsewhere */}
+              {/* Title — company on home, page name elsewhere */}
               <div
                 className="relative overflow-hidden flex-1 flex items-center justify-center"
                 style={{ height: "1.2rem" }}
               >
-                {isHome ? (
-                  <motion.div
-                    animate={{ y: `-${activeIdx * 1.2}rem` }}
-                    transition={{ duration: 0.8, ease: EASE }}
-                    style={{ willChange: "transform" }}
-                    className="flex flex-col items-center"
-                  >
-                    {SECTIONS.map((s) => (
-                      <span
-                        key={s.id}
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.78rem",
-                          fontWeight: 500,
-                          letterSpacing: "0.08em",
-                          lineHeight: "1.2rem",
-                          textTransform: "uppercase",
-                        }}
-                        className="whitespace-nowrap"
-                      >
-                        {s.label}
-                      </span>
-                    ))}
-                  </motion.div>
-                ) : (
-                  <span
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={pageTitle}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.4, ease: EASE }}
                     style={{
                       fontFamily: "var(--font-mono)",
                       fontSize: "0.78rem",
@@ -198,8 +149,8 @@ export function FluidNavbar() {
                     className="whitespace-nowrap"
                   >
                     {pageTitle}
-                  </span>
-                )}
+                  </motion.span>
+                </AnimatePresence>
               </div>
 
               {/* Burger */}
@@ -209,22 +160,8 @@ export function FluidNavbar() {
                 aria-label="Open menu"
               >
                 <svg width="22" height="14" viewBox="0 0 32 18" fill="none">
-                  <line
-                    x1="0"
-                    y1="4"
-                    x2="32"
-                    y2="4"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                  />
-                  <line
-                    x1="0"
-                    y1="14"
-                    x2="32"
-                    y2="14"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                  />
+                  <line x1="0" y1="4"  x2="32" y2="4"  stroke="currentColor" strokeWidth="1.4" />
+                  <line x1="0" y1="14" x2="32" y2="14" stroke="currentColor" strokeWidth="1.4" />
                 </svg>
               </button>
             </motion.div>
@@ -295,12 +232,13 @@ export function FluidNavbar() {
                 >
                   +421 123 456 789
                 </a>
-                <a
-                  href="#gallery"
+                <Link
+                  href="/contact"
+                  onClick={() => setOpen(false)}
                   className="hover:opacity-60 fluid-transition"
                 >
                   Showroom
-                </a>
+                </Link>
                 <a
                   href="mailto:hello@residencia.sk"
                   className="opacity-70 hover:opacity-100 fluid-transition"
@@ -310,22 +248,25 @@ export function FluidNavbar() {
               </motion.div>
 
               {/* Get a quote */}
-              <motion.a
-                href="#contact"
-                onClick={() => setOpen(false)}
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.65, ease: EASE }}
-                className="flex items-center justify-center gap-3 h-14 border border-white/30 hover:bg-white hover:text-black fluid-transition"
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.78rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                }}
               >
-                <ArrowRight className="w-4 h-4" /> Get a quote
-              </motion.a>
+                <Link
+                  href="/contact"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center gap-3 h-14 border border-white/30 hover:bg-white hover:text-black fluid-transition"
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.78rem",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  <ArrowRight className="w-4 h-4" /> Get a quote
+                </Link>
+              </motion.div>
 
               {/* Close X */}
               <button
