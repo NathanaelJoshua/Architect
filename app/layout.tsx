@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ScrollReveal } from "@/components/scroll-reveal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
       className={cn("h-full antialiased", inter.variable, geistMono.variable)}
     >
       <body className="min-h-full flex flex-col font-sans bg-cream text-ink">
+        <ScrollReveal />
         {children}
       </body>
     </html>
