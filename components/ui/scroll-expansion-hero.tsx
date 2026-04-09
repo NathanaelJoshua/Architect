@@ -14,8 +14,14 @@ import { motion } from "framer-motion";
 interface ScrollExpandMediaProps {
   mediaType?: "video" | "image";
   mediaSrc: string;
+  /** Optional sketch/blueprint image rendered over the final media.
+   *  Crossfades to 0 as scroll progresses — used for the
+   *  "sketch → finished house" transformation. */
+  sketchSrc?: string;
   posterSrc?: string;
   bgImageSrc: string;
+  /** Optional sketch background that crossfades to bgImageSrc. */
+  sketchBgSrc?: string;
   title?: string;
   date?: string;
   scrollToExpand?: string;
@@ -26,8 +32,10 @@ interface ScrollExpandMediaProps {
 const ScrollExpandMedia = ({
   mediaType = "video",
   mediaSrc,
+  sketchSrc,
   posterSrc,
   bgImageSrc,
+  sketchBgSrc,
   title,
   date,
   scrollToExpand,
@@ -155,12 +163,9 @@ const ScrollExpandMedia = ({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  const mediaWidth = 300 + scrollProgress * (isMobileState ? 650 : 1250);
-  const mediaHeight = 400 + scrollProgress * (isMobileState ? 200 : 400);
-  const textTranslateX = scrollProgress * (isMobileState ? 180 : 150);
-
-  const firstWord = title ? title.split(" ")[0] : "";
-  const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
+  // Fixed media box — no expansion.
+  const mediaWidth = isMobileState ? 950 : 1550;
+  const mediaHeight = isMobileState ? 600 : 800;
 
   return (
     <div
@@ -169,10 +174,11 @@ const ScrollExpandMedia = ({
     >
       <section className="relative flex flex-col items-center justify-start min-h-[100dvh]">
         <div className="relative w-full flex flex-col items-center min-h-[100dvh]">
+          {/* Final background — fades in as user scrolls */}
           <motion.div
             className="absolute inset-0 z-0 h-full"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 - scrollProgress }}
+            animate={{ opacity: sketchBgSrc ? scrollProgress : 1 - scrollProgress }}
             transition={{ duration: 0.1 }}
           >
             <Image
@@ -181,14 +187,36 @@ const ScrollExpandMedia = ({
               width={1920}
               height={1080}
               className="w-screen h-screen"
-              style={{
-                objectFit: "cover",
-                objectPosition: "center",
-              }}
+              style={{ objectFit: "cover", objectPosition: "center" }}
               priority
             />
             <div className="absolute inset-0 bg-black/10" />
           </motion.div>
+
+          {/* Sketch background — fades out as user scrolls */}
+          {sketchBgSrc && (
+            <motion.div
+              className="absolute inset-0 z-0 h-full"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 - scrollProgress }}
+              transition={{ duration: 0.1 }}
+            >
+              <Image
+                src={sketchBgSrc}
+                alt="Sketch background"
+                width={1920}
+                height={1080}
+                className="w-screen h-screen"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  filter: "grayscale(1) contrast(1.15)",
+                }}
+                priority
+              />
+              <div className="absolute inset-0 bg-cream/30" />
+            </motion.div>
+          )}
 
           <div className="container mx-auto flex flex-col items-center justify-start relative z-10">
             <div className="flex flex-col items-center justify-center w-full h-[100dvh] relative">
@@ -264,6 +292,7 @@ const ScrollExpandMedia = ({
                   )
                 ) : (
                   <div className="relative w-full h-full">
+                    {/* Finished house photo */}
                     <Image
                       src={mediaSrc}
                       alt={title || "Media content"}
@@ -272,53 +301,130 @@ const ScrollExpandMedia = ({
                       className="w-full h-full object-cover rounded-xl"
                     />
 
+                    {/* Drawn-line house — strokes animate in over the first 40% of scroll */}
+                    {sketchSrc && (
+                      <svg
+                        viewBox="0 0 100 60"
+                        preserveAspectRatio="xMidYMid meet"
+                        className="absolute inset-0 w-full h-full pointer-events-none z-[1]"
+                        style={{ opacity: Math.max(0, 1 - scrollProgress * 1.4) }}
+                      >
+                        {(() => {
+                          const draw = Math.min(1, scrollProgress / 0.4);
+                          const dash = (delay: number, duration = 0.25) => {
+                            const local = Math.min(
+                              1,
+                              Math.max(0, (draw - delay) / duration),
+                            );
+                            return {
+                              pathLength: 1,
+                              strokeDasharray: 1,
+                              strokeDashoffset: 1 - local,
+                              fill: "none" as const,
+                              stroke: "#f3ead8",
+                              strokeWidth: 0.25,
+                              strokeLinecap: "round" as const,
+                              strokeLinejoin: "round" as const,
+                              vectorEffect: "non-scaling-stroke" as const,
+                            };
+                          };
+                          return (
+                            <>
+                              {/* ground */}
+                              <line x1="15" y1="50" x2="85" y2="50" {...dash(0)} />
+                              {/* left wall */}
+                              <line x1="25" y1="50" x2="25" y2="28" {...dash(0.15)} />
+                              {/* right wall */}
+                              <line x1="75" y1="50" x2="75" y2="28" {...dash(0.15)} />
+                              {/* roof */}
+                              <polyline points="22,30 50,12 78,30" {...dash(0.3)} />
+                              {/* door */}
+                              <rect x="46" y="38" width="8" height="12" {...dash(0.5)} />
+                              {/* left window */}
+                              <rect x="31" y="34" width="8" height="8" {...dash(0.6)} />
+                              <line x1="35" y1="34" x2="35" y2="42" {...dash(0.65)} />
+                              <line x1="31" y1="38" x2="39" y2="38" {...dash(0.65)} />
+                              {/* right window */}
+                              <rect x="61" y="34" width="8" height="8" {...dash(0.6)} />
+                              <line x1="65" y1="34" x2="65" y2="42" {...dash(0.65)} />
+                              <line x1="61" y1="38" x2="69" y2="38" {...dash(0.65)} />
+                            </>
+                          );
+                        })()}
+                      </svg>
+                    )}
+
+                    {/* Sketch overlay — crossfades to finished as scroll progresses */}
+                    {sketchSrc && (
+                      <motion.div
+                        className="absolute inset-0 rounded-xl overflow-hidden"
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 - scrollProgress }}
+                        transition={{ duration: 0.1 }}
+                      >
+                        <Image
+                          src={sketchSrc}
+                          alt="Sketch"
+                          width={1280}
+                          height={720}
+                          className="w-full h-full object-cover rounded-xl"
+                          style={{
+                            filter:
+                              "grayscale(1) contrast(1.25) brightness(1.05)",
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-cream/20 mix-blend-screen rounded-xl" />
+                      </motion.div>
+                    )}
+
                     <motion.div
                       className="absolute inset-0 bg-black/50 rounded-xl"
                       initial={{ opacity: 0.7 }}
-                      animate={{ opacity: 0.7 - scrollProgress * 0.3 }}
+                      animate={{ opacity: 0.7 - scrollProgress * 0.5 }}
                       transition={{ duration: 0.2 }}
                     />
                   </div>
                 )}
 
-                <div className="flex flex-col items-center text-center relative z-10 mt-4 transition-none">
-                  {date && (
-                    <p
-                      className="text-2xl text-blue-200"
-                      style={{ transform: `translateX(-${textTranslateX}vw)` }}
-                    >
-                      {date}
-                    </p>
-                  )}
+                <div className="flex flex-col items-center text-center relative z-10 mt-4">
+                  {date && <p className="text-2xl text-cream/80">{date}</p>}
                   {scrollToExpand && (
-                    <p
-                      className="text-blue-200 font-medium text-center"
-                      style={{ transform: `translateX(${textTranslateX}vw)` }}
-                    >
+                    <p className="text-cream/80 font-medium text-center">
                       {scrollToExpand}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div
-                className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-none flex-col ${
-                  textBlend ? "mix-blend-difference" : "mix-blend-normal"
-                }`}
-              >
-                <motion.h2
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-200 transition-none"
-                  style={{ transform: `translateX(-${textTranslateX}vw)` }}
+              {title && (
+                <h2
+                  className={`text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.02em] text-cream text-center w-full relative z-10 flex flex-wrap justify-center gap-x-[0.3em] ${
+                    textBlend ? "mix-blend-difference" : "mix-blend-normal"
+                  }`}
+                  aria-label={title}
                 >
-                  {firstWord}
-                </motion.h2>
-                <motion.h2
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-blue-200 transition-none"
-                  style={{ transform: `translateX(${textTranslateX}vw)` }}
-                >
-                  {restOfTitle}
-                </motion.h2>
-              </div>
+                  {title.split(" ").map((word, i) => (
+                    <span
+                      key={`${word}-${i}`}
+                      aria-hidden
+                      className="inline-block overflow-hidden leading-[1.15] py-[0.05em]"
+                    >
+                      <motion.span
+                        initial={{ y: "110%" }}
+                        animate={{ y: "0%" }}
+                        transition={{
+                          duration: 1,
+                          ease: [0.455, 0.03, 0.515, 0.955],
+                          delay: 0.15 + i * 0.09,
+                        }}
+                        className="inline-block"
+                      >
+                        {word}
+                      </motion.span>
+                    </span>
+                  ))}
+                </h2>
+              )}
             </div>
 
             <motion.section

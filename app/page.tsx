@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+} from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { Footer7 } from "@/components/ui/footer-7";
@@ -144,15 +150,6 @@ const products = [
 ];
 
 export default function Home() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const yBack = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const yFront = useTransform(scrollYProgress, [0, 1], ["0%", "90%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
   return (
     <div className="relative bg-cream text-ink">
       {/* 1. INTRO LOADER — fluid.glass inspired */}
@@ -161,74 +158,8 @@ export default function Home() {
       {/* 2. NAV */}
       <FluidNavbar />
 
-      {/* 3. HERO — centered, glass-button */}
-      <section
-        ref={heroRef}
-        id="top"
-        data-no-reveal
-        className="relative h-screen w-full overflow-hidden bg-[#212325] text-cream"
-      >
-        <motion.div style={{ y: yBack }} className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2400&auto=format&fit=crop"
-            alt="Architecture"
-            fill
-            priority
-            className="object-cover opacity-40"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80" />
-
-        <motion.div
-          style={{ y: yFront, opacity: heroOpacity }}
-          className="relative z-10 h-full flex flex-col justify-center items-center text-center px-6"
-        >
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 2.4 }}
-            className="label-mono uppercase tracking-[0.1em] text-cream/70"
-          >
-            Glazing specialists
-          </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 1.4,
-              ease: [0.455, 0.03, 0.515, 0.955],
-              delay: 2.5,
-            }}
-            className="text-[clamp(2.75rem,6.4vw,6.4rem)] leading-[1] tracking-[-0.03em] max-w-5xl font-light mt-6"
-          >
-            Exceptional glazing
-            <br />
-            for those who build
-            <br />
-            <em className="font-serif italic">with vision</em>.
-          </motion.h1>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 3 }}
-            className="mt-12"
-          >
-            <a
-              href="#about"
-              className="rounded-full px-8 py-4 label-mono uppercase tracking-[0.1em] inline-flex items-center gap-3 text-white border border-white/25 backdrop-blur-2xl bg-white/5 hover:bg-white/15 fluid-transition"
-            >
-              View our work <ArrowUpRight className="w-4 h-4" />
-            </a>
-          </motion.div>
-        </motion.div>
-
-        <div className="absolute bottom-8 left-0 right-0 flex justify-between px-6 md:px-16 label-mono uppercase tracking-[0.1em] text-cream/70 z-10">
-          <span>Est. 2026</span>
-          <span className="flex items-center gap-2">
-            Scroll <ArrowRight className="w-3 h-3" />
-          </span>
-        </div>
-      </section>
+      {/* 3. HERO — sketch, then parallax finished architecture */}
+      <SketchToHouseHero />
 
       {/* 4. ABOUT — fluid.glass inspired */}
       <FluidAbout />
@@ -248,6 +179,137 @@ export default function Home() {
       {/* 8. FOOTER */}
       <Footer7 />
     </div>
+  );
+}
+
+/* ─── Sketch → photo hero (fluid.glass approach) ─────────────
+   A pinned section. Heading sits at top. Below it, the same
+   image is rendered twice: once through an SVG edge-detect
+   filter (line art), once unfiltered (photo). As the user
+   scrolls, a clip-path on the photo layer wipes upward, so
+   the building "becomes real" from the ground up — sketch
+   above the wipe line, finished photo below it.
+   ───────────────────────────────────────────────────────────── */
+function SketchToHouseHero() {
+  const wipeRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: wipeRef,
+    offset: ["start start", "end end"],
+  });
+  // Wipe: photo reveals from bottom up over the sketch as user scrolls
+  // through the pinned stage.
+  const wipe = useTransform(scrollYProgress, [0.1, 0.85], [100, 0]);
+  const wipeClip = useMotionTemplate`inset(${wipe}% 0 0 0)`;
+  // "Into reality" overlay — fades in alongside the wipe and stays.
+  const textOpacity = useTransform(scrollYProgress, [0.25, 0.45], [0, 1]);
+  const textY = useTransform(scrollYProgress, [0.25, 0.45], [40, 0]);
+  // Zoom: both images scale up subtly as the user scrolls through the stage.
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.09]);
+
+  return (
+    <section
+      id="top"
+      data-no-reveal
+      className="relative w-full bg-cream text-ink"
+    >
+      {/* Text block */}
+      <div className="w-full px-6 pt-50  0 md:pt-46 pb-16 md:pb-15 text-center">
+        <h1 className=" font-sans text-[clamp(2rem,6vw,5.5rem)] leading-[1.05] tracking-[-0.02em] font-medium max-w-[20ch] mx-auto">
+          Bring your
+          <div className="font-serif italic font-normal">
+            imagination to life
+          </div>
+        </h1>
+      </div>
+
+      {/* Sketch → finished wipe.
+          Tall wrapper provides scroll budget; inner sticky pins
+          the image stage, and the photo wipes up over the sketch. */}
+      <div
+        ref={wipeRef}
+        className="relative w-full"
+        style={{ height: "220vh" }}
+      >
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-cream p-[15px]">
+          <div
+            className="relative w-full max-h-full"
+            style={{ aspectRatio: "16 / 9" }}
+          >
+            {/* Sketch — multiply blend drops the white paper to the cream canvas */}
+            <motion.div
+              style={{ scale: imgScale }}
+              className="absolute inset-0 mix-blend-multiply"
+            >
+              <Image
+                src="/sketche-house.png"
+                alt="Architectural sketch"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
+              />
+            </motion.div>
+            {/* Finished photo — wipes up from bottom */}
+            <motion.div
+              className="absolute inset-0"
+              style={{ clipPath: wipeClip, WebkitClipPath: wipeClip }}
+            >
+              <motion.div
+                style={{ scale: imgScale }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src="/finished-house.png"
+                  alt="Finished house"
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              </motion.div>
+            </motion.div>
+
+            {/* "Into reality" overlay — fades in with the wipe */}
+            <motion.div
+              style={{ opacity: textOpacity, y: textY }}
+              className="absolute inset-0 flex items-center justify-center pointer-events-none mix-blend-difference"
+            >
+              <span className="text-white text-[clamp(2.5rem,8vw,8rem)] leading-none tracking-[-0.02em] font-sans font-medium">
+                into <em className="font-serif italic font-normal">reality</em>
+              </span>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Small helper: a word inside a line-mask (fluid.glass reveal) */
+function Word({
+  children,
+  delay,
+  italic,
+}: {
+  children: React.ReactNode;
+  delay: number;
+  italic?: boolean;
+}) {
+  const ease = [0.455, 0.03, 0.515, 0.955] as const;
+  return (
+    <span
+      aria-hidden
+      className="inline-block overflow-hidden leading-[1.15] py-[0.05em]"
+    >
+      <motion.span
+        initial={{ y: "110%" }}
+        animate={{ y: "0%" }}
+        transition={{ duration: 1.1, ease, delay }}
+        className={`inline-block ${italic ? "font-serif italic" : ""}`}
+      >
+        {children}
+      </motion.span>
+    </span>
   );
 }
 
@@ -582,7 +644,8 @@ function FluidTestimonials() {
         <div className="flex items-end justify-between mb-16 divider-hair pt-6">
           <span className="label-mono">Stories — 03</span>
           <span className="label-mono opacity-60">
-            {String(active + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            {String(active + 1).padStart(2, "0")} /{" "}
+            {String(total).padStart(2, "0")}
           </span>
         </div>
 
@@ -661,7 +724,10 @@ function FluidTestimonials() {
 function FluidCtaBanner() {
   const ease = [0.455, 0.03, 0.515, 0.955] as const;
   return (
-    <section id="contact" className="relative bg-cream text-ink px-6 md:px-16 py-32 md:py-40">
+    <section
+      id="contact"
+      className="relative bg-cream text-ink px-6 md:px-16 py-32 md:py-40"
+    >
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
