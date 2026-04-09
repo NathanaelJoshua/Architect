@@ -4,7 +4,6 @@ import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
 import { Footer7 } from "@/components/ui/footer-7";
 import { FluidNavbar } from "@/components/ui/fluid-navbar";
 
@@ -125,6 +124,25 @@ const projects = [
   },
 ];
 
+const products = [
+  {
+    title: "Doors",
+    img: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    title: "Windows",
+    img: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    title: "Additional",
+    img: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    title: "Structural",
+    img: "https://images.unsplash.com/photo-1600573472556-e636c2acda88?q=80&w=1400&auto=format&fit=crop",
+  },
+];
+
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -215,68 +233,17 @@ export default function Home() {
       {/* 4. ABOUT — fluid.glass inspired */}
       <FluidAbout />
 
+      {/* 4b. PRODUCT COLLECTION */}
+      <ProductCollection />
+
       {/* 5. PROJECTS SHOWCASE */}
       <ProjectsShowcase />
 
-      {/* 6. TESTIMONIALS */}
-      <section id="stories" className="px-6 md:px-16 py-32 bg-cream">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-10 divider-hair pt-6">
-            <span className="label-mono">Stories — 03</span>
-            <h2 className="text-3xl md:text-5xl font-light tracking-tight max-w-md text-right">
-              What our clients say
-            </h2>
-          </div>
-          <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[640px] overflow-hidden">
-            <TestimonialsColumn
-              testimonials={testimonials.slice(0, 3)}
-              duration={15}
-            />
-            <TestimonialsColumn
-              testimonials={testimonials.slice(3, 6)}
-              className="hidden md:block"
-              duration={19}
-            />
-            <TestimonialsColumn
-              testimonials={testimonials.slice(6, 9)}
-              className="hidden lg:block"
-              duration={17}
-            />
-          </div>
-        </div>
-      </section>
+      {/* 6. TESTIMONIALS — fluid.glass blockquote carousel */}
+      <FluidTestimonials />
 
-      {/* 7. NEWSLETTER CTA */}
-      <section
-        id="contact"
-        className="relative px-6 md:px-16 py-40 bg-ink text-cream overflow-hidden"
-      >
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="label-mono opacity-70">Begin a project</span>
-          <h2 className="text-[clamp(2.5rem,6vw,6rem)] font-light tracking-tight leading-[1] mt-6">
-            Build the home
-            <br />
-            <em className="font-serif italic">you imagined</em>.
-          </h2>
-          <p className="mt-6 text-cream/70 max-w-md mx-auto">
-            Tell us about your site, your family, and the way you want to live.
-            We'll take it from there.
-          </p>
-          <form className="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="you@domain.com"
-              className="flex-1 rounded-full px-6 py-4 bg-white/10 border border-white/20 text-cream placeholder:text-cream/40 outline-none focus:border-white/60 fluid-transition"
-            />
-            <button
-              type="submit"
-              className="glass text-white rounded-full px-6 py-4 label-mono inline-flex items-center justify-center gap-3"
-            >
-              Get in touch <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
-      </section>
+      {/* 7. CTA BANNER — "Where vision meets execution" */}
+      <FluidCtaBanner />
 
       {/* 8. FOOTER */}
       <Footer7 />
@@ -531,6 +498,201 @@ function ProjectsShowcase() {
             </motion.div>
           </AnimatePresence>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Product Collection ─────────────────────────────────────
+   24-col grid (6-col mobile) of four product blocks. Hover
+   lifts the image slightly and fades in a label arrow.
+   ───────────────────────────────────────────────────────────── */
+function ProductCollection() {
+  const ease = [0.455, 0.03, 0.515, 0.955] as const;
+  return (
+    <section
+      id="collection"
+      className="relative bg-cream text-ink px-6 md:px-16 py-32 md:py-40"
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-end justify-between mb-16 divider-hair pt-6">
+          <span className="label-mono">Collection — 02</span>
+          <h2 className="text-3xl md:text-5xl font-light tracking-[-0.02em] max-w-md text-right">
+            Built for those who
+            <br />
+            <em className="font-serif italic">build with vision</em>.
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {products.map((prod, i) => (
+            <motion.a
+              key={prod.title}
+              href="#projects"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.9, delay: i * 0.08, ease }}
+              className="group block"
+            >
+              <div className="relative aspect-[3/4] overflow-hidden bg-ink/5">
+                <Image
+                  src={prod.img}
+                  alt={prod.title}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover fluid-transition group-hover:scale-[1.04] opacity-90 group-hover:opacity-100"
+                />
+              </div>
+              <div className="mt-4 flex items-center justify-between">
+                <span className="label-mono uppercase tracking-[0.08em] text-xs">
+                  0{i + 1} — {prod.title}
+                </span>
+                <ArrowUpRight className="w-4 h-4 opacity-60 group-hover:opacity-100 group-hover:rotate-45 fluid-transition" />
+              </div>
+            </motion.a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Fluid Testimonials ─────────────────────────────────────
+   Single-active blockquote carousel. Large quote text, client
+   photo (grayscale), prev/next nav. Crossfade between slides.
+   ───────────────────────────────────────────────────────────── */
+function FluidTestimonials() {
+  const slides = testimonials.slice(0, 5);
+  const [active, setActive] = useState(0);
+  const ease = [0.76, 0, 0.24, 1] as const;
+  const total = slides.length;
+  const t = slides[active];
+
+  useEffect(() => {
+    const id = setInterval(() => setActive((a) => (a + 1) % total), 7000);
+    return () => clearInterval(id);
+  }, [total]);
+
+  return (
+    <section
+      id="stories"
+      className="relative bg-cream text-ink px-6 md:px-16 py-32 md:py-40 overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-end justify-between mb-16 divider-hair pt-6">
+          <span className="label-mono">Stories — 03</span>
+          <span className="label-mono opacity-60">
+            {String(active + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center">
+          {/* photo */}
+          <div className="md:col-span-4 lg:col-span-3 order-2 md:order-1">
+            <div className="relative w-[173px] h-[213px] overflow-hidden bg-ink/5">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={t.image}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8, ease }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={t.image}
+                    alt={t.name}
+                    fill
+                    sizes="173px"
+                    className="object-cover grayscale"
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* quote */}
+          <div className="md:col-span-8 lg:col-span-9 order-1 md:order-2">
+            <AnimatePresence mode="wait">
+              <motion.blockquote
+                key={t.name}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.8, ease }}
+                className="text-[clamp(1.75rem,4.2vw,4rem)] font-light leading-[1.1] tracking-[-0.02em]"
+              >
+                <span className="font-serif italic opacity-50 mr-2">“</span>
+                {t.text}
+                <span className="font-serif italic opacity-50 ml-1">”</span>
+                <footer className="mt-10 label-mono uppercase tracking-[0.08em] text-xs opacity-70">
+                  {t.name} — {t.role}
+                </footer>
+              </motion.blockquote>
+            </AnimatePresence>
+
+            <div className="mt-12 flex items-center gap-4">
+              <button
+                onClick={() => setActive((a) => (a - 1 + total) % total)}
+                aria-label="Previous"
+                className="w-12 h-12 rounded-full border border-ink/25 flex items-center justify-center hover:bg-ink hover:text-cream fluid-transition"
+              >
+                <ArrowRight className="w-4 h-4 rotate-180" />
+              </button>
+              <button
+                onClick={() => setActive((a) => (a + 1) % total)}
+                aria-label="Next"
+                className="w-12 h-12 rounded-full border border-ink/25 flex items-center justify-center hover:bg-ink hover:text-cream fluid-transition"
+              >
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Fluid CTA Banner ───────────────────────────────────────
+   Bordered container, two buttons. "Where vision meets
+   execution". Inspired by fluid.glass closing CTA.
+   ───────────────────────────────────────────────────────────── */
+function FluidCtaBanner() {
+  const ease = [0.455, 0.03, 0.515, 0.955] as const;
+  return (
+    <section id="contact" className="relative bg-cream text-ink px-6 md:px-16 py-32 md:py-40">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1, ease }}
+          className="relative border border-ink/25 px-8 md:px-20 py-20 md:py-32 text-center overflow-hidden"
+        >
+          <span className="label-mono opacity-70">Begin a project</span>
+          <h2 className="mt-8 text-[clamp(2.5rem,6.4vw,6.4rem)] font-light tracking-[-0.03em] leading-[1]">
+            Where vision meets
+            <br />
+            <em className="font-serif italic">execution</em>.
+          </h2>
+          <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="#collection"
+              className="inline-flex items-center justify-center gap-3 bg-ink text-cream px-8 py-4 label-mono uppercase tracking-[0.08em] text-xs hover:bg-ink/85 fluid-transition group"
+            >
+              Visit showroom
+              <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 fluid-transition" />
+            </a>
+            <a
+              href="mailto:hello@architect.studio"
+              className="inline-flex items-center justify-center gap-3 border border-ink/30 px-8 py-4 label-mono uppercase tracking-[0.08em] text-xs hover:bg-ink hover:text-cream fluid-transition group"
+            >
+              Get in touch
+              <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 fluid-transition" />
+            </a>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
